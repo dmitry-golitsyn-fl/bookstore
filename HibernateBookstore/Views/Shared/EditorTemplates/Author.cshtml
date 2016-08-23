@@ -1,0 +1,13 @@
+﻿@model HibernateBookstore.Models.Author
+
+
+<span class="editor-label">
+    @Html.LabelFor(model => model.FirstName)
+    @Html.EditorFor(model => model.FirstName)
+
+    @Html.LabelFor(model => model.LastName)
+    @Html.EditorFor(model => model.LastName)
+
+    @Html.LabelFor(model => model.MidName)
+    @Html.EditorFor(model => model.MidName)
+</span>

@@ -1,0 +1,114 @@
+﻿@model HibernateBookstore.ViewModels.BookEditViewModel
+<style type="text/css">
+    .container {
+        width: 300px;
+        clear: both;
+    }
+    .container input {
+        width: 100%;
+        clear: both;
+    }
+    .container label {
+        margin-bottom: 20px;
+        margin-bottom: 0px;
+        width: 100%;
+    }
+    </style>
+<form class="container">
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    
+    <fieldset>        
+        @if (Model.EditingMode == ItemEditingMode.Create)
+        {
+            <legend>Добавление книги</legend>
+        }
+        else if (Model.EditingMode == ItemEditingMode.Edit)
+        {
+            <legend>Редактирование книги</legend>
+        }
+        else
+        {
+            <legend>Удаление книги</legend>
+        }
+        
+        @Html.HiddenFor(model => model.BookItem.Id)
+        <label>
+            @Html.LabelFor(model => model.BookItem.Name)
+        </label>
+        <p>
+            @if (Model.EditingMode != ItemEditingMode.Delete)
+            { 
+                @Html.EditorFor(model => model.BookItem.Name)
+            }
+            else
+            {
+                @Html.Raw(Model.BookItem.Name)
+            }
+        </p>
+
+        <label>
+            @Html.LabelFor(model => model.BookItem.PublicationDate)
+        </label>
+        <p>
+            @if (Model.EditingMode != ItemEditingMode.Delete)
+            { 
+                @Html.EditorFor(model => model.BookItem.PublicationDate);
+            }
+            else
+            {
+                @Html.Raw(Model.BookItem.PublicationDate)
+            }
+        </p>
+
+        <label>
+            @Html.LabelFor(model => model.BookItem.ISBN)
+        </label>
+        <p>
+            @if (Model.EditingMode != ItemEditingMode.Delete)
+            { 
+                @Html.EditorFor(model => model.BookItem.ISBN)
+            }
+            else
+            {
+                @Html.Raw(Model.BookItem.ISBN)
+            }
+        </p>
+
+        <label>
+            @Html.LabelFor(model => model.BookItem.Authors)
+        </label>
+        <p>
+            @if (Model.EditingMode == ItemEditingMode.Delete)
+            { 
+                foreach (var author in Model.BookItem.Authors) 
+                {
+                    @Html.Raw(author.FirstName) @Html.Raw(" ") @Html.Raw(author.MidName) @Html.Raw(" ") @Html.Raw(author.LastName) <br/>          
+                }
+            }
+            else
+            {
+                @Html.ListBoxFor(model => model.SelectedAuthors, Model.AvailableAuthors, new {style="width:100%;"})
+            }
+        </p>
+
+        <p>
+            @if (Model.EditingMode == ItemEditingMode.Create)
+            {
+                <input type="submit" value="Создать книгу" />
+            }
+            else if (Model.EditingMode == ItemEditingMode.Edit)
+            {
+                <input type="submit" value="Сохранить книгу" />
+            }
+            else
+            {
+                <input type="submit" value="Удалить книгу" />
+            }            
+        </p>
+
+        <div>
+            @Html.ActionLink("Назад к списку", "Index")
+        </div>
+    </fieldset>
+</form>

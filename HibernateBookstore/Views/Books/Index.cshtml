@@ -1,0 +1,97 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@model HibernateBookstore.ViewModels.BookIndexViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<p>
+    @Html.ActionLink("Добавить книгу", "Create")
+</p>
+@using (Html.BeginForm())
+{
+    @Html.Hidden("SentFromSearch", "true")
+    @Html.Hidden("Order", Model.Order)
+    @Html.Hidden("SortField", Model.SortField)
+    <p>
+        Поиск по названию: @Html.TextBoxFor(model => model.SearchName)  
+        <input type="submit" value="Поиск" /></p>    
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Books.First().Name).ToHtmlString(), 
+                "Index", 
+                new 
+                { 
+                    page = Model.Books.PageNumber,
+                    itemsPerPage = Model.ItemsPerPage,
+                    sortOrder = (Model.Order == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending), 
+                    sortField = "Name"
+                }) 
+        </th>
+        <th>
+            @Html.ActionLink(Html.DisplayNameFor(model => model.Books.First().PublicationDate).ToHtmlString(), 
+                "Index", 
+                new 
+                { 
+                    page = Model.Books.PageNumber,
+                    itemsPerPage = Model.ItemsPerPage,
+                    sortOrder = (Model.Order == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending), 
+                    sortField = "PublicationDate"
+                }) 
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Books.First().ISBN)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Books) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.PublicationDate)*@
+            @item.PublicationDate.Value.ToString("yyyy")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ISBN)
+        </td>
+        <td>
+            @Html.ActionLink("Изменить", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Удалить", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
+<br />
+<p>
+    Страница @(Model.Books.PageCount < Model.Books.PageNumber ? 0 : Model.Books.PageNumber) из @Model.Books.PageCount 
+
+@using (Html.BeginForm())
+{
+    @Html.Hidden("SentFromSearch", "true")
+    @Html.Hidden("Order", Model.Order)
+    @Html.Hidden("SearchName", Model.SearchName)
+    @Html.Hidden("SortField", Model.SortField)
+    <p>
+        Элементов на странице: @Html.DropDownListFor(model => model.ItemsPerPage, Model.AvailableItemsPerPageSource)        
+        <input type="submit" value="ОК" />
+    </p>
+}
+@Html.PagedListPager(Model.Books, page => Url.Action("Index",   
+    new 
+    { 
+        page,
+        itemsPerPage = Model.ItemsPerPage,
+        sortOrder = Model.Order, 
+        sortField = "Name"
+    })) 
+</p>
